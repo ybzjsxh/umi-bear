@@ -2,8 +2,32 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 80px;
-  height: 80px;
-  font-size: 32px;
+  width: 60px;
+  height: 60px;
+  font-size: 28px;
   z-index: 999;
+}
+
+.my-navbar {
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+}
+
+.my-drawer {
+  position: relative;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  .am-drawer-sidebar {
+    background-color: #fff;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    .am-list {
+      width: 300px;
+      padding: 0;
+    }
+  }
+  .my-list {
+    margin-top: 45px;
+  }
 }

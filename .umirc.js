@@ -3,16 +3,16 @@
 export default {
   treeShaking: true,
   hash: true,
-  history: 'hash',
-  routes: [
-    {
-      path: '/',
-      component: '../layouts/index',
-      routes: [
-        { path: '/', component: '../pages/index' }
-      ]
-    }
-  ],
+  // history: 'hash',
+  // routes: [
+  //   {
+  //     path: '/',
+  //     component: '../layouts/index',
+  //     routes: [
+  //       { path: '/', component: '../pages/home/index' }
+  //     ]
+  //   }
+  // ],
   plugins: [
     // ref: https://umijs.org/plugin/umi-plugin-react.html
     ['umi-plugin-react', {
