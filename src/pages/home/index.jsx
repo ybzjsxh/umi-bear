@@ -3,10 +3,12 @@ import { NavBar, Drawer, List } from 'antd-mobile';
 import { Affix, Button, Icon } from 'antd';
 
 import styles from './index.less';
+import { connect } from 'dva';
 
 const Item = List.Item;
 
-export default class ListExample extends React.Component {
+@connect(({ loading }) => ({ loading: loading.global }))
+class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -72,11 +74,20 @@ export default class ListExample extends React.Component {
           open={this.state.open}
           onOpenChange={this.handleLeftClick}
         >
-          <List renderHeader={() => 'Text Wrapping'} className={styles['my-list']}>
+          <List
+            renderHeader={() => 'Text Wrapping'}
+            className={styles['my-list']}
+            loading={{
+              spinning: this.props.loading,
+              indicator: <Icon type="loading" />,
+              size: 'large',
+              tip: '正在加载数据...',
+            }}
+          >
             {this.state.content.map((i, index) => (
               <Item
                 arrow="horizontal"
-                onClick={() => this.props.history.push(`/home/${index}`)}
+                onClick={() => this.props.history.push(`/home/article/${index}`)}
                 key={i.title}
                 style={{ height: 80 }}
               >
@@ -99,3 +110,5 @@ export default class ListExample extends React.Component {
     );
   }
 }
+
+export default Home;

@@ -1,12 +1,9 @@
 import 'antd-mobile/dist/antd-mobile.less';
-import styles from './index.less';
 
-import Home from './home';
+import Redirect from 'umi/redirect'
 
 export default function() {
   return (
-    <div className={styles.normal}>
-      <Home />
-    </div>
+    <Redirect to='/home' />
   );
 }
