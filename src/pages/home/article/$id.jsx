@@ -8,12 +8,10 @@ import hljs from 'highlight.js';
 import './article.less';
 import 'highlight.js/styles/atom-one-dark.css';
 
+
 marked.setOptions({
   renderer: new marked.Renderer(),
-  highlight: code => {
-    hljs.initHighlightingOnLoad();
-    return hljs.highlightAuto(code).value;
-  },
+  highlight: code => hljs.highlightAuto(code).value,
   pedantic: false,
   gfm: true,
   tables: true,
@@ -31,14 +29,11 @@ class Article extends React.Component {
 
   componentDidMount() {
     console.log(this.props.loading, this.props);
+    hljs.initHighlightingOnLoad()
   }
 
   onOpenChange = () => {
-    this.setState({ loading: !this.props.loading });
-    setTimeout(() => {
-      this.props.history.goBack();
-      this.setState({ loading: !this.props.loading });
-    }, 1000);
+    this.props.history.goBack();
   };
 
   handleEdit = () => {

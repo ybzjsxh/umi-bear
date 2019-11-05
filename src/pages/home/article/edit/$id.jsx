@@ -1,4 +1,4 @@
-import styles from './edit.less';
+// import styles from './edit.less';
 import { Icon as PICon } from 'antd';
 import { NavBar, Icon } from 'antd-mobile';
 
@@ -14,7 +14,7 @@ export default props => {
       onLeftClick={handleLeftClick}
       rightContent={<PICon type="save" style={{ marginRight: 16 }} onClick={()=>console.log('save')} />}
     >
-      <div className={styles.title}>currently editing article: {props.match.params.id}</div>;
+      <div>currently editing article: {props.match.params.id}</div>
     </NavBar>
   );
 };
