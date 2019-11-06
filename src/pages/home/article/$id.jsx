@@ -6,7 +6,7 @@ import marked from 'marked';
 import hljs from 'highlight.js';
 
 import './article.less';
-import 'highlight.js/styles/atom-one-dark.css';
+// import 'highlight.js/styles/atom-one-dark.css';
 
 
 marked.setOptions({
