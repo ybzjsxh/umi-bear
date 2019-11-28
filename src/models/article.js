@@ -1,3 +1,11 @@
+import {
+  queryArticle,
+  getArticleDetail,
+  addArticle,
+  delArticle,
+  updateArticle,
+} from '@/services/api';
+
 export default {
   namespace: 'article',
   state: {
@@ -5,7 +13,7 @@ export default {
     total: 0,
     articleDetail: {
       _id: '',
-      author: 'biaochenxuying',
+      author: '',
       category: [],
       comments: [],
       create_time: '',
@@ -22,6 +30,79 @@ export default {
       update_time: '',
     },
   },
-  effects: {},
-  reducers: {}
+  effects: {
+    *queryArticle({ payload }, { call, put }) {
+      const { resolve } = payload;
+      const response = yield call(queryArticle);
+      !!resolve && resolve(response);
+      if (response.code === 0) {
+        yield put({
+          type: 'saveArticleList',
+          payload: response.data.list,
+        });
+        yield put({
+          type: 'saveArticleListTotal',
+          payload: response.data.count,
+        });
+      }
+    },
+
+    *addArticle({ payload }, { call, put }) {
+      const { resolve, params } = payload;
+      const response = yield call(addArticle, params);
+      !!resolve && resolve(response);
+    },
+
+    *getArticleDetail({ payload }, { call, put }) {
+      const { resolve, params } = payload;
+      const response = yield call(getArticleDetail, params);
+      !!resolve && resolve(response);
+      // console.log('response :', response)
+      if (response.code === 0) {
+        yield put({
+          type: 'saveArticleDetail',
+          payload: response.data,
+        });
+      }
+    },
+
+    *updateArticle({ payload }, { call, put }) {
+      const { resolve, params } = payload;
+      const response = yield call(updateArticle, params);
+      !!resolve && resolve(response)
+    },
+
+    *delArticle({ payload }, { call, put }) {
+      const { resolve, params } = payload;
+      const response = yield call(delArticle, params);
+      if (response.code === 0) {
+        yield put({ type: 'queryArticle', payload: response.data });
+        yield put({ type: 'getArticleDetail', payload: response.data });
+      }
+      !!resolve && resolve(response);
+    },
+  },
+
+  reducers: {
+    saveArticleList(state, { payload }) {
+      return {
+        ...state,
+        articleList: payload,
+      };
+    },
+
+    saveArticleListTotal(state, { payload }) {
+      return {
+        ...state,
+        total: payload,
+      };
+    },
+
+    saveArticleDetail(state, { payload }) {
+      return {
+        ...state,
+        articleDetail: payload,
+      };
+    },
+  },
 };
