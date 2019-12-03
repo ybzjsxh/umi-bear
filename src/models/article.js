@@ -69,7 +69,7 @@ export default {
     *updateArticle({ payload }, { call, put }) {
       const { resolve, params } = payload;
       const response = yield call(updateArticle, params);
-      !!resolve && resolve(response)
+      !!resolve && resolve(response);
     },
 
     *delArticle({ payload }, { call, put }) {

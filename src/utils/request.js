@@ -22,18 +22,18 @@ const codeMessage = {
 /**
  * 异常处理程序
  */
-const errorHandler = (error => {
+const errorHandler = error => {
   const { response } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status } = response;
 
-    Toast.fail(`请求错误 ${status}: ${errorText}`, 3, null, true)
+    Toast.fail(`请求错误 ${status}: ${errorText}`, 3, null, true);
   } else if (!response) {
     Toast.fail('网络异常');
   }
   return response;
-});
+};
 
 /**
  * 配置request请求时的默认参数

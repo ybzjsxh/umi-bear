@@ -77,7 +77,7 @@ class Article extends React.Component {
           params: {
             title,
             content,
-          }
+          },
         },
       });
     }).then(res => {
@@ -105,11 +105,11 @@ class Article extends React.Component {
     return (
       <>
         <NavBar
-          icon={<Icon type='left' />}
+          icon={<Icon type="left" />}
           onLeftClick={this.handleLeftClick}
           rightContent={
             <Button
-              size='small'
+              size="small"
               style={{ background: 'rgba(0,180,0,.7)', color: '#fff' }}
               onClick={this.handleSave}
             >
