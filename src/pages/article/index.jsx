@@ -67,7 +67,8 @@ class Article extends React.Component {
   handleSave = () => {
     this.setState({ loading: true });
     Toast.loading('保存中', 0, null, true);
-    const { dispatch, content } = this.props;
+    const { dispatch, content, location } = this.props;
+    const { id } = location.query;
     const { title } = this.state;
     new Promise(resolve => {
       dispatch({
@@ -75,6 +76,7 @@ class Article extends React.Component {
         payload: {
           resolve,
           params: {
+            id,
             title,
             content,
           },
@@ -85,7 +87,7 @@ class Article extends React.Component {
       if (res.code === 0) {
         this.setState({
           loading: false,
-          content: res.data.list,
+          // content: res.data.list,
         });
         Toast.hide();
         this.props.history.goBack();
@@ -116,7 +118,6 @@ class Article extends React.Component {
               <PICon
                 type={this.state.loading ? 'loading' : 'save'}
                 style={{ marginRight: 16 }}
-                loading={this.state.loading}
               />
               保存
             </Button>

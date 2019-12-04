@@ -47,12 +47,6 @@ export default {
       }
     },
 
-    *addArticle({ payload }, { call, put }) {
-      const { resolve, params } = payload;
-      const response = yield call(addArticle, params);
-      !!resolve && resolve(response);
-    },
-
     *getArticleDetail({ payload }, { call, put }) {
       const { resolve, params } = payload;
       const response = yield call(getArticleDetail, params);
@@ -64,6 +58,12 @@ export default {
           payload: response.data,
         });
       }
+    },
+
+    *addArticle({ payload }, { call, put }) {
+      const { resolve, params } = payload;
+      const response = yield call(addArticle, params);
+      !!resolve && resolve(response);
     },
 
     *updateArticle({ payload }, { call, put }) {

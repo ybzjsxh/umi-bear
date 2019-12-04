@@ -23,7 +23,7 @@ export default {
         code: 0,
         data: { list: articleList, count: articleList.length },
       });
-    }, 3000);
+    }, 1000);
   },
   'GET /api/getArticleDetail': (req, res) => {
     setTimeout(() => {
@@ -37,8 +37,20 @@ export default {
     }, 3000);
   },
   'POST /api/updateArticle': (req, res) => {
+    const { id, title, content } = req.query;
+    articleList[getIndex(id)] = title
+    articleDetail[getIndex(id)] = content
+    setTimeout(() => {
+      res.send({
+        code: 0,
+        data: { list: [...articleList, ...articleDetail] },
+      });
+    }, 3000);
+  },
+  'POST /api/addArticle': (req, res) => {
     const { title, content } = req.query;
-    articleList.push({ title, id: 3123 });
+    console.log(title);
+    articleList.push({ title, id: 31234 });
     articleDetail.push({ content });
     setTimeout(() => {
       res.send({

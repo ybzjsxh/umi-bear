@@ -106,6 +106,10 @@ class Home extends React.Component {
     });
   };
 
+  handleAdd = () => {
+    router.push(`/article?id=`)
+  }
+
   render() {
     const { article } = this.props;
     const sidebar = (
@@ -213,7 +217,7 @@ class Home extends React.Component {
             className={styles['btn-affix']}
             type="primary"
             shape="circle"
-            onClick={() => console.log('add')}
+            onClick={this.handleAdd}
           >
             <Icon type="file-add" />
           </Button>
