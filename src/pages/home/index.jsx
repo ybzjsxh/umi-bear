@@ -38,7 +38,7 @@ class Home extends React.Component {
 
     new Promise(resolve => {
       dispatch({
-        type: 'article/queryArticle',
+        type: 'article/getArticleList',
         payload: {
           resolve,
         },
@@ -51,7 +51,6 @@ class Home extends React.Component {
           loading: false,
           content: res.data.list,
         });
-        localStorage.setItem('content', JSON.stringify(res.data.list));
       } else {
         Toast.fail(`${res.message}`, 3, null, true);
       }
@@ -107,8 +106,8 @@ class Home extends React.Component {
   };
 
   handleAdd = () => {
-    router.push(`/article?id=`)
-  }
+    router.push(`/article?id=`);
+  };
 
   render() {
     const { article } = this.props;

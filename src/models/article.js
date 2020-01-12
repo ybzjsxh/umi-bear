@@ -1,5 +1,5 @@
 import {
-  queryArticle,
+  getArticleList,
   getArticleDetail,
   addArticle,
   delArticle,
@@ -28,81 +28,62 @@ export default {
       tags: [],
       title: '',
       update_time: '',
+      content: ''
     },
   },
   effects: {
-    *queryArticle({ payload }, { call, put }) {
-      const { resolve } = payload;
-      const response = yield call(queryArticle);
-      !!resolve && resolve(response);
-      if (response.code === 0) {
-        yield put({
-          type: 'saveArticleList',
-          payload: response.data.list,
-        });
-        yield put({
-          type: 'saveArticleListTotal',
-          payload: response.data.count,
-        });
-      }
-    },
-
-    *getArticleDetail({ payload }, { call, put }) {
-      const { resolve, params } = payload;
-      const response = yield call(getArticleDetail, params);
-      !!resolve && resolve(response);
-      // console.log('response :', response)
-      if (response.code === 0) {
-        yield put({
-          type: 'saveArticleDetail',
-          payload: response.data,
-        });
-      }
-    },
-
-    *addArticle({ payload }, { call, put }) {
-      const { resolve, params } = payload;
-      const response = yield call(addArticle, params);
-      !!resolve && resolve(response);
-    },
-
-    *updateArticle({ payload }, { call, put }) {
-      const { resolve, params } = payload;
-      const response = yield call(updateArticle, params);
-      !!resolve && resolve(response);
-    },
-
-    *delArticle({ payload }, { call, put }) {
-      const { resolve, params } = payload;
-      const response = yield call(delArticle, params);
-      if (response.code === 0) {
-        yield put({ type: 'queryArticle', payload: response.data });
-        yield put({ type: 'getArticleDetail', payload: response.data });
-      }
-      !!resolve && resolve(response);
-    },
+    // *getArticleList({ payload }, { call, put }) {
+    // },
+    // *getArticleDetail({ payload }, { call, put }) {
+    // },
+    // *addArticle({ payload }, { call, put }) {
+    // },
+    // *updateArticle({ payload }, { call, put }) {
+    // },
+    // *delArticle({ payload }, { call, put }) {
+    // },
   },
 
   reducers: {
+    getArticleList(state, { payload }) {
+      const { resolve } = payload;
+      let res = {
+        articleList: state.articleList,
+        total: state.total,
+      };
+      !!resolve && resolve(res);
+    },
+    addArticle(state, {payload}) {
+      const { resolve, params} = payload;
+      let res = {
+        ...state,
+        total: state.total+1,
+        articleDetail: { content: params.content}
+      }
+      !!resolve && resolve(res)
+    },
     saveArticleList(state, { payload }) {
-      return {
+      let res = {
         ...state,
         articleList: payload,
       };
+      return res;
     },
 
     saveArticleListTotal(state, { payload }) {
-      return {
+      let res = {
         ...state,
         total: payload,
       };
+      return res;
     },
 
     saveArticleDetail(state, { payload }) {
-      return {
+      let res = {
         ...state,
         articleDetail: payload,
       };
+      return res;
     },
   },
 };

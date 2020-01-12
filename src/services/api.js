@@ -1,7 +1,7 @@
 import { stringify } from 'querystring';
 import request from '@/utils/request';
 
-export async function queryArticle(params) {
+export async function getArticleList(params) {
   return request(`/api/getArticleList`);
 }
 
