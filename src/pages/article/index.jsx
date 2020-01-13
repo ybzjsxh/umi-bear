@@ -64,37 +64,66 @@ class Article extends React.Component {
     return this.props.history.goBack();
   };
 
-  handleSave = () => {
+  handleSave = area => {
     this.setState({ loading: true });
     Toast.loading('保存中', 0, null, true);
     const { dispatch, content, location } = this.props;
-    const { id } = location.query;
+    const { id: __id } = location.query;
     const { title } = this.state;
-    new Promise(resolve => {
-      dispatch({
-        type: 'article/updateArticle',
-        payload: {
-          resolve,
-          params: {
-            id,
-            title,
-            content,
+    if (!__id) {
+      new Promise(resolve => {
+        dispatch({
+          type: 'article/addArticle',
+          payload: {
+            resolve,
+            params: {
+              __id: `${new Date().getTime()}${Math.floor(Math.random())}`,
+              title,
+              area,
+            },
           },
-        },
-      });
-    }).then(res => {
-      console.log('res :', res);
-      if (res.code === 0) {
-        this.setState({
-          loading: false,
-          // content: res.data.list,
         });
-        Toast.hide();
-        this.props.history.goBack();
-      } else {
-        Toast.fail(`${res.message}`, 1, null, true);
-      }
-    });
+      }).then(res => {
+        console.log('res :', res);
+        if (res.code === 0) {
+          this.setState({
+            loading: false,
+            content: res.data.list,
+          });
+          Toast.hide();
+          this.props.history.goBack();
+          return
+        } else {
+          Toast.fail(`${res.message}`, 1, null, true);
+        }
+      });
+    } else {
+      new Promise(resolve => {
+        dispatch({
+          type: 'article/updateArticle',
+          payload: {
+            resolve,
+            params: {
+              __id,
+              title,
+              content,
+            },
+          },
+        });
+      }).then(res => {
+        console.log('res :', res);
+        if (res.code === 0) {
+          this.setState({
+            loading: false,
+            // content: res.data.list,
+          });
+          Toast.hide();
+          this.props.history.goBack();
+        } else {
+          Toast.fail(`${res.message}`, 1, null, true);
+        }
+      });
+    }
   };
 
   handleChange = value => {
@@ -113,7 +142,7 @@ class Article extends React.Component {
             <Button
               size="small"
               style={{ background: 'rgba(0,180,0,.7)', color: '#fff' }}
-              onClick={this.handleSave}
+              onClick={()=>this.handleSave(content)}
             >
               <PICon
                 type={this.state.loading ? 'loading' : 'save'}

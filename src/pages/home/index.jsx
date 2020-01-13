@@ -49,7 +49,7 @@ class Home extends React.Component {
         Toast.hide();
         this.setState({
           loading: false,
-          content: res.data.list,
+          content: res.data.articleList,
         });
       } else {
         Toast.fail(`${res.message}`, 3, null, true);
@@ -73,7 +73,7 @@ class Home extends React.Component {
     ]);
   };
 
-  handleDelete = index => {
+  handleDelete = _id => {
     Toast.loading('删除中', 0, null, true);
     const { dispatch } = this.props;
     new Promise(resolve => {
@@ -81,7 +81,7 @@ class Home extends React.Component {
         type: 'article/delArticle',
         payload: {
           resolve,
-          params: { index },
+          params: { _id },
         },
       });
     }).then(res => {
@@ -190,7 +190,7 @@ class Home extends React.Component {
                   right={[
                     {
                       text: '删除',
-                      onPress: () => this.handleAlert(index),
+                      onPress: () => this.handleAlert(i._id),
                       style: { backgroundColor: '#F4333C', color: 'white' },
                     },
                   ]}

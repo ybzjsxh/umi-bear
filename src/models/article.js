@@ -28,62 +28,77 @@ export default {
       tags: [],
       title: '',
       update_time: '',
-      content: ''
     },
   },
   effects: {
-    // *getArticleList({ payload }, { call, put }) {
-    // },
-    // *getArticleDetail({ payload }, { call, put }) {
-    // },
-    // *addArticle({ payload }, { call, put }) {
-    // },
-    // *updateArticle({ payload }, { call, put }) {
-    // },
-    // *delArticle({ payload }, { call, put }) {
-    // },
+    *getArticleList({ payload }, { call, put }) {
+      const { resolve } = payload;
+      const articleList = JSON.parse(localStorage.getItem('articleList')) || [];
+      const response = {
+        code: 0,
+        data: { list: articleList, count: articleList.length },
+      };
+      !!resolve && resolve(response);
+      if (response.code === 0) {
+        // yield put({ type: 'saveArticleList', payload: response.data.list });
+        yield put({
+          type: 'saveArticleListTotal',
+          payload: response.data.count,
+        });
+      }
+    },
+    *getArticleDetail({ payload }, { call, put }) {
+      const articleDetail = JSON.parse(localStorage.getItem('articleDetail')) || {};
+      const { resolve, params } = payload;
+      let response = {
+        code: 0,
+        data: {
+          // title: articleList[getIndex(req.query.id)],
+          detail: articleDetail[params.id],
+        },
+      };
+      !!resolve && resolve(response);
+      if (response.code === 0) {
+        yield put({ type: 'saveArticleDetail', payload: response.data });
+      }
+    },
+    *addArticle({ payload }, { call, put }) {
+      const { resolve, params } = payload;
+      console.log(params);
+      let response = {
+        code: 0,
+        data: [],
+      };
+      !!resolve && resolve(response);
+      yield put({ type: 'saveArticleList', payload: response.data });
+    },
+    *updateArticle({ payload }, { call, put }) {},
+    *delArticle({ payload }, { call, put }) {},
   },
 
   reducers: {
-    getArticleList(state, { payload }) {
-      const { resolve } = payload;
-      let res = {
-        articleList: state.articleList,
-        total: state.total,
-      };
-      !!resolve && resolve(res);
-    },
-    addArticle(state, {payload}) {
-      const { resolve, params} = payload;
-      let res = {
-        ...state,
-        total: state.total+1,
-        articleDetail: { content: params.content}
-      }
-      !!resolve && resolve(res)
-    },
     saveArticleList(state, { payload }) {
       let res = {
         ...state,
         articleList: payload,
       };
+      localStorage.removeItem('articleList');
+      localStorage.setItem('articleList', JSON.stringify(res));
       return res;
     },
 
     saveArticleListTotal(state, { payload }) {
-      let res = {
+      return {
         ...state,
         total: payload,
       };
-      return res;
     },
 
     saveArticleDetail(state, { payload }) {
-      let res = {
+      return {
         ...state,
         articleDetail: payload,
       };
-      return res;
     },
   },
 };
