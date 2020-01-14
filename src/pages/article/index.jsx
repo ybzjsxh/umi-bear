@@ -7,7 +7,7 @@ import hljs from 'highlight.js';
 import { connect } from 'dva';
 
 import 'easymde/dist/easymde.min.css';
-// import styles from './article.less';
+import styles from './article.less';
 
 @connect(({ loading, article }) => ({
   loading: loading.global,
@@ -19,6 +19,7 @@ class Article extends React.Component {
     this.state = {
       title: '',
       content: '',
+      _id: '',
       loading: false,
     };
   }
@@ -26,22 +27,23 @@ class Article extends React.Component {
   async componentDidMount() {
     Toast.loading('加载中');
     const { dispatch, location } = this.props;
-    const { id } = location.query;
-    console.log(id);
+    const { _id } = location.query;
+    this.setState({ _id });
+    console.log(_id);
     new Promise(resolve => {
       dispatch({
         type: 'article/getArticleDetail',
-        payload: { resolve, params: { id } },
+        payload: { resolve, params: { _id } },
       });
     })
       .then(res => {
         Toast.hide();
-        console.log('reeeee', res);
+        console.log('reeeee', res, res.data.articleList);
         if (res.code === 0) {
           this.setState({
             loading: false,
-            title: res.data.title.title,
-            content: res.data.detail.content,
+            title: res.data.title,
+            content: res.data.detail,
           });
         }
         hljs.initHighlightingOnLoad();
@@ -68,16 +70,16 @@ class Article extends React.Component {
     this.setState({ loading: true });
     Toast.loading('保存中', 0, null, true);
     const { dispatch, content, location } = this.props;
-    const { id: __id } = location.query;
+    const { _id } = location.query;
     const { title } = this.state;
-    if (!__id) {
+    if (!_id) {
       new Promise(resolve => {
         dispatch({
           type: 'article/addArticle',
           payload: {
             resolve,
             params: {
-              __id: `${new Date().getTime()}${Math.floor(Math.random())}`,
+              _id: `${new Date().getTime()}${Math.floor(Math.random())}`,
               title,
               area,
             },
@@ -92,7 +94,7 @@ class Article extends React.Component {
           });
           Toast.hide();
           this.props.history.goBack();
-          return
+          return;
         } else {
           Toast.fail(`${res.message}`, 1, null, true);
         }
@@ -104,7 +106,7 @@ class Article extends React.Component {
           payload: {
             resolve,
             params: {
-              __id,
+              _id,
               title,
               content,
             },
@@ -115,7 +117,8 @@ class Article extends React.Component {
         if (res.code === 0) {
           this.setState({
             loading: false,
-            // content: res.data.list,
+            title: res.data.title,
+            content: res.data.detail,
           });
           Toast.hide();
           this.props.history.goBack();
@@ -130,8 +133,12 @@ class Article extends React.Component {
     this.setState({ content: value });
   };
 
+  handleTitleChange = e => {
+    this.setState({ title: e.target.value });
+  };
+
   render() {
-    const { title, content } = this.state;
+    const { title, content, _id } = this.state;
     console.log(this.props, this.state);
     return (
       <>
@@ -142,7 +149,7 @@ class Article extends React.Component {
             <Button
               size="small"
               style={{ background: 'rgba(0,180,0,.7)', color: '#fff' }}
-              onClick={()=>this.handleSave(content)}
+              onClick={() => this.handleSave(content)}
             >
               <PICon
                 type={this.state.loading ? 'loading' : 'save'}
@@ -154,6 +161,12 @@ class Article extends React.Component {
         >
           <div>{title}</div>
         </NavBar>
+        {!_id && (
+          <div className={styles['title']}>
+            <span>标题: </span>
+            <input onChange={this.handleTitleChange} />
+          </div>
+        )}
         <SimpleMDE
           onChange={this.handleChange}
           value={content}

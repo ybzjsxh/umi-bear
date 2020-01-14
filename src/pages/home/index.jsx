@@ -49,7 +49,7 @@ class Home extends React.Component {
         Toast.hide();
         this.setState({
           loading: false,
-          content: res.data.articleList,
+          content: res.data.list.articleList,
         });
       } else {
         Toast.fail(`${res.message}`, 3, null, true);
@@ -65,11 +65,11 @@ class Home extends React.Component {
     console.log('search');
   };
 
-  handleAlert = index => {
+  handleAlert = _id => {
     const alert = Modal.alert;
     alert('删除', '确定吗?', [
       { text: '取消', onPress: () => console.log('cancel') },
-      { text: '确认', onPress: () => this.handleDelete(index) },
+      { text: '确认', onPress: () => this.handleDelete(_id) },
     ]);
   };
 
@@ -110,7 +110,7 @@ class Home extends React.Component {
   };
 
   render() {
-    const { article } = this.props;
+    const { content } = this.state;
     const sidebar = (
       <List>
         {[0, 1, 2, 3, 4].map((i, index) => {
@@ -184,7 +184,7 @@ class Home extends React.Component {
                 tip: '正在加载数据...',
               }}
             >
-              {article.articleList.map((i, index) => (
+              {content && content.map((i, index) => (
                 <SwipeAction
                   autoClose
                   right={[
@@ -194,14 +194,14 @@ class Home extends React.Component {
                       style: { backgroundColor: '#F4333C', color: 'white' },
                     },
                   ]}
-                  key={i.title}
+                  key={i._id}
                   onOpen={() => console.log('global open')}
                   onClose={() => console.log('global close')}
                 >
                   <Item
-                    key={i.title}
+                    key={i._id}
                     arrow="horizontal"
-                    onClick={() => router.push(`/article?id=${i.id}`)}
+                    onClick={() => router.push(`/article?_id=${i._id}`)}
                     style={{ height: 80 }}
                   >
                     {i.title}

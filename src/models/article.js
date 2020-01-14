@@ -1,10 +1,10 @@
-import {
-  getArticleList,
-  getArticleDetail,
-  addArticle,
-  delArticle,
-  updateArticle,
-} from '@/services/api';
+// import {
+//   getArticleList,
+//   getArticleDetail,
+//   addArticle,
+//   delArticle,
+//   updateArticle,
+// } from '@/services/api';
 
 export default {
   namespace: 'article',
@@ -36,7 +36,7 @@ export default {
       const articleList = JSON.parse(localStorage.getItem('articleList')) || [];
       const response = {
         code: 0,
-        data: { list: articleList, count: articleList.length },
+        data: { list: articleList, count: articleList.total },
       };
       !!resolve && resolve(response);
       if (response.code === 0) {
@@ -48,13 +48,16 @@ export default {
       }
     },
     *getArticleDetail({ payload }, { call, put }) {
-      const articleDetail = JSON.parse(localStorage.getItem('articleDetail')) || {};
+      const articleDetail =
+        JSON.parse(localStorage.getItem('articleList')) || {};
       const { resolve, params } = payload;
+      let title = articleDetail.articleList.filter(i => i._id === params._id)[0]
+        .title;
       let response = {
         code: 0,
         data: {
-          // title: articleList[getIndex(req.query.id)],
-          detail: articleDetail[params.id],
+          title,
+          detail: articleDetail.articleDetail.desc,
         },
       };
       !!resolve && resolve(response);
@@ -70,13 +73,35 @@ export default {
         data: [],
       };
       !!resolve && resolve(response);
-      yield put({ type: 'saveArticleList', payload: response.data });
+      yield put({ type: 'addArticleList', params });
+      yield put({ type: 'saveArticleDetail', params });
+      let articleList = JSON.parse(localStorage.getItem('articleList')) || {
+        articleList: [],
+        articleDetail: {},
+      };
+      articleList.articleList.push({ title: params.title, _id: params._id });
+      articleList.articleDetail._id = params._id;
+      articleList.articleDetail.desc = params.area;
+      articleList.total += 1;
+      localStorage.removeItem('articleList');
+      localStorage.setItem('articleList', JSON.stringify(articleList));
     },
     *updateArticle({ payload }, { call, put }) {},
     *delArticle({ payload }, { call, put }) {},
   },
 
   reducers: {
+    addArticleList(state, { payload }) {
+      let new_articleList = [...state.articleList];
+      new_articleList.push({
+        _id: payload._id,
+        content: payload.area,
+      });
+      return {
+        ...state,
+        articleList: new_articleList,
+      };
+    },
     saveArticleList(state, { payload }) {
       let res = {
         ...state,
