@@ -86,7 +86,25 @@ export default {
       localStorage.removeItem('articleList');
       localStorage.setItem('articleList', JSON.stringify(articleList));
     },
-    *updateArticle({ payload }, { call, put }) {},
+    *updateArticle({ payload }, { call, put }) {
+      const { resolve, params } = payload;
+      console.log(params);
+      let response = {
+        code: 0,
+        data: [],
+      };
+      !!resolve && resolve(response);
+      yield put({ type: 'saveArticleDetail', params });
+      let articleList = JSON.parse(localStorage.getItem('articleList')) || {
+        articleList: [],
+        articleDetail: {},
+      }
+      console.log(articleList);
+      articleList.articleDetail.desc = params.area
+      localStorage.removeItem('articleList')
+      localStorage.setItem('articleList', JSON.stringify(articleList))
+
+    },
     *delArticle({ payload }, { call, put }) {},
   },
 

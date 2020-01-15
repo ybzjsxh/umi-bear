@@ -30,29 +30,33 @@ class Article extends React.Component {
     const { _id } = location.query;
     this.setState({ _id });
     console.log(_id);
-    new Promise(resolve => {
-      dispatch({
-        type: 'article/getArticleDetail',
-        payload: { resolve, params: { _id } },
-      });
-    })
-      .then(res => {
-        Toast.hide();
-        console.log('reeeee', res, res.data.articleList);
-        if (res.code === 0) {
-          this.setState({
-            loading: false,
-            title: res.data.title,
-            content: res.data.detail,
-          });
-        }
-        hljs.initHighlightingOnLoad();
+    if(!!_id) {
+      new Promise(resolve => {
+        dispatch({
+          type: 'article/getArticleDetail',
+          payload: { resolve, params: { _id } },
+        });
       })
-      .catch(err => {
-        this.setState({ loading: false });
-        console.log(err);
-      });
-    document.querySelector('.preview').click();
+        .then(res => {
+          Toast.hide();
+          console.log('reeeee', res);
+          if (res.code === 0) {
+            this.setState({
+              loading: false,
+              title: res.data.title,
+              content: res.data.detail,
+            });
+          }
+          hljs.initHighlightingOnLoad();
+        })
+        .catch(err => {
+          this.setState({ loading: false });
+          console.log(err);
+        });
+      setTimeout(() => {
+        document.querySelector('.preview').click();
+      }, 500);
+    }
   }
 
   // componentDidUpdate() {
@@ -69,7 +73,7 @@ class Article extends React.Component {
   handleSave = area => {
     this.setState({ loading: true });
     Toast.loading('保存中', 0, null, true);
-    const { dispatch, content, location } = this.props;
+    const { dispatch, location } = this.props;
     const { _id } = location.query;
     const { title } = this.state;
     if (!_id) {
@@ -108,7 +112,7 @@ class Article extends React.Component {
             params: {
               _id,
               title,
-              content,
+              area,
             },
           },
         });
@@ -139,7 +143,6 @@ class Article extends React.Component {
 
   render() {
     const { title, content, _id } = this.state;
-    console.log(this.props, this.state);
     return (
       <>
         <NavBar
@@ -159,7 +162,7 @@ class Article extends React.Component {
             </Button>
           }
         >
-          <div>{title}</div>
+          {!_id && (<div>{title}</div>)}
         </NavBar>
         {!_id && (
           <div className={styles['title']}>
