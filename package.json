@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "start": "umi dev",
+    "start": "cross-env MOCK=none umi dev ",
+    "start:mock": "umi dev",
     "build": "umi build",
     "test": "umi test",
     "lint": "eslint --ext .js src mock tests",
@@ -11,6 +12,8 @@
   "dependencies": {
     "antd": "^3.19.5",
     "antd-mobile": "^2.3.1",
+    "cross-env": "^6.0.3",
+    "dayjs": "^1.8.19",
     "dva": "^2.6.0-beta.6",
     "highlight.js": "^9.16.2",
     "marked": "^0.7.0",
@@ -43,5 +46,5 @@
   "engines": {
     "node": ">=8.0.0"
   },
-  "version": "0.0.0"
+  "version": "0.1.0"
 }

@@ -1,0 +1,12 @@
+FROM node
+
+WORKDIR /opt/app
+
+COPY package.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 8098
+CMD ["npm", "run", "start"]

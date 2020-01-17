@@ -10,6 +10,7 @@ import {
 } from 'antd-mobile';
 import { Affix, Button, Icon } from 'antd';
 import router from 'umi/router';
+import dayjs from 'dayjs';
 
 import styles from './index.less';
 import { connect } from 'dva';
@@ -44,14 +45,14 @@ class Home extends React.Component {
         },
       });
     }).then(res => {
-      console.log('res :', res);
+      // console.log('res :', res);
       if (res.code === 0) {
         Toast.hide();
         this.setState({
           loading: false,
           content: res.data.list,
         });
-        localStorage.setItem('content', JSON.stringify(res.data.list));
+        // localStorage.setItem('content', JSON.stringify(res.data.list));
       } else {
         Toast.fail(`${res.message}`, 3, null, true);
       }
@@ -66,15 +67,15 @@ class Home extends React.Component {
     console.log('search');
   };
 
-  handleAlert = index => {
+  handleAlert = id => {
     const alert = Modal.alert;
     alert('删除', '确定吗?', [
       { text: '取消', onPress: () => console.log('cancel') },
-      { text: '确认', onPress: () => this.handleDelete(index) },
+      { text: '确认', onPress: () => this.handleDelete(id) },
     ]);
   };
 
-  handleDelete = index => {
+  handleDelete = id => {
     Toast.loading('删除中', 0, null, true);
     const { dispatch } = this.props;
     new Promise(resolve => {
@@ -82,12 +83,14 @@ class Home extends React.Component {
         type: 'article/delArticle',
         payload: {
           resolve,
-          params: { index },
+          params: { id },
         },
       });
     }).then(res => {
       if (res.code === 0) {
         Toast.hide();
+      } else {
+        Toast.fail('删除失败', 3, null, true);
       }
     });
   };
@@ -107,8 +110,8 @@ class Home extends React.Component {
   };
 
   handleAdd = () => {
-    router.push(`/article?id=`)
-  }
+    router.push(`/article?id=`);
+  };
 
   render() {
     const { article } = this.props;
@@ -191,19 +194,20 @@ class Home extends React.Component {
                   right={[
                     {
                       text: '删除',
-                      onPress: () => this.handleAlert(index),
+                      onPress: () => this.handleAlert(i._id),
                       style: { backgroundColor: '#F4333C', color: 'white' },
                     },
                   ]}
-                  key={i.title}
+                  key={i._id}
                   onOpen={() => console.log('global open')}
                   onClose={() => console.log('global close')}
                 >
                   <Item
-                    key={i.title}
+                    key={i._id}
                     arrow="horizontal"
-                    onClick={() => router.push(`/article?id=${i.id}`)}
+                    onClick={() => router.push(`/article?id=${i._id}`)}
                     style={{ height: 80 }}
+                    extra={`${dayjs(i.create_time).format('YY.M.DD HH:mm')}`}
                   >
                     {i.title}
                   </Item>

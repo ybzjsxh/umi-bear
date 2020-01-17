@@ -7,7 +7,7 @@ import hljs from 'highlight.js';
 import { connect } from 'dva';
 
 import 'easymde/dist/easymde.min.css';
-// import styles from './article.less';
+import styles from './article.less';
 
 @connect(({ loading, article }) => ({
   loading: loading.global,
@@ -20,6 +20,7 @@ class Article extends React.Component {
       title: '',
       content: '',
       loading: false,
+      id: '',
     };
   }
 
@@ -27,30 +28,35 @@ class Article extends React.Component {
     Toast.loading('加载中');
     const { dispatch, location } = this.props;
     const { id } = location.query;
-    console.log(id);
-    new Promise(resolve => {
-      dispatch({
-        type: 'article/getArticleDetail',
-        payload: { resolve, params: { id } },
-      });
-    })
-      .then(res => {
-        Toast.hide();
-        console.log('reeeee', res);
-        if (res.code === 0) {
-          this.setState({
-            loading: false,
-            title: res.data.title.title,
-            content: res.data.detail.content,
-          });
-        }
-        hljs.initHighlightingOnLoad();
+    console.log(`id: ${id || '没有'}`);
+    if (!!id) {
+      this.setState({ id });
+      new Promise(resolve => {
+        dispatch({
+          type: 'article/getArticleDetail',
+          payload: { resolve, params: { id } },
+        });
       })
-      .catch(err => {
-        this.setState({ loading: false });
-        console.log(err);
-      });
-    document.querySelector('.preview').click();
+        .then(res => {
+          Toast.hide();
+          // console.log('reeeee', res);
+          if (res.code === 0) {
+            this.setState({
+              loading: false,
+              title: res.data.title,
+              content: res.data.detail,
+            });
+          }
+          hljs.initHighlightingOnLoad();
+        })
+        .catch(err => {
+          this.setState({ loading: false });
+          // console.log(err);
+        });
+      document.querySelector('.preview').click();
+    } else {
+      Toast.hide();
+    }
   }
 
   // componentDidUpdate() {
@@ -60,50 +66,87 @@ class Article extends React.Component {
   // }
 
   handleLeftClick = () => {
-    console.log('goBack');
+    // console.log('goBack');
     return this.props.history.goBack();
   };
 
   handleSave = () => {
     this.setState({ loading: true });
     Toast.loading('保存中', 0, null, true);
-    const { dispatch, content, location } = this.props;
+    const { dispatch, location } = this.props;
     const { id } = location.query;
-    const { title } = this.state;
-    new Promise(resolve => {
-      dispatch({
-        type: 'article/updateArticle',
-        payload: {
-          resolve,
-          params: {
-            id,
-            title,
-            content,
+    const { title, content } = this.state;
+    if (!!id) {
+      new Promise(resolve => {
+        dispatch({
+          type: 'article/updateArticle',
+          payload: {
+            resolve,
+            params: {
+              id,
+              title,
+              content,
+            },
           },
-        },
+        });
+      }).then(res => {
+        // console.log('res :', res);
+        if (res.code === 0) {
+          this.setState({
+            loading: false,
+            // content: res.data.list,
+          });
+          Toast.hide();
+          this.props.history.goBack();
+        } else {
+          Toast.fail(`${res.message}`, 1, null, true);
+        }
       });
-    }).then(res => {
-      console.log('res :', res);
-      if (res.code === 0) {
+    } else {
+      if (!!title && !!content) {
+        new Promise(resolve => {
+          dispatch({
+            type: 'article/addArticle',
+            payload: {
+              resolve,
+              params: {
+                title,
+                content,
+              },
+            },
+          });
+        }).then(res => {
+          // console.log(res);
+          if (res.code === 0) {
+            this.setState({
+              loading: false,
+            });
+            Toast.hide();
+            this.props.history.goBack();
+          } else {
+            Toast.fail(`${res.message}`, 1, null, true);
+          }
+        });
+      } else {
         this.setState({
           loading: false,
-          // content: res.data.list,
         });
-        Toast.hide();
-        this.props.history.goBack();
-      } else {
-        Toast.fail(`${res.message}`, 1, null, true);
+        Toast.fail(`标题或内容不能为空！`, 3, null, true);
       }
-    });
+    }
   };
 
   handleChange = value => {
     this.setState({ content: value });
   };
 
+  handleTitleChange = e => {
+    this.setState({ title: e.target.value });
+  };
+
   render() {
-    const { title, content } = this.state;
-    console.log(this.props, this.state);
+    const { title, content, id } = this.state;
+    // console.log(this.props, this.state);
     return (
       <>
         <NavBar
@@ -123,8 +166,14 @@ class Article extends React.Component {
             </Button>
           }
         >
-          <div>{title}</div>
+          {title && <div>{title}</div>}
         </NavBar>
+        {!id && (
+          <div className={styles.title}>
+            <span>标题：</span>
+            <input onChange={this.handleTitleChange} placeholder="请输入标题" />
+          </div>
+        )}
         <SimpleMDE
           onChange={this.handleChange}
           value={content}

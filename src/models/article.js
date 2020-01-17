@@ -76,8 +76,7 @@ export default {
       const { resolve, params } = payload;
       const response = yield call(delArticle, params);
       if (response.code === 0) {
-        yield put({ type: 'queryArticle', payload: response.data });
-        yield put({ type: 'getArticleDetail', payload: response.data });
+        yield put({ type: 'queryArticle', payload: resolve });
       }
       !!resolve && resolve(response);
     },
