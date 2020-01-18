@@ -7,6 +7,8 @@ import hljs from 'highlight.js';
 import { connect } from 'dva';
 
 import 'easymde/dist/easymde.min.css';
+import Comment from './components/comment'
+import CommentList from './components/commentList';
 import styles from './article.less';
 
 @connect(({ loading, article }) => ({
@@ -223,6 +225,8 @@ class Article extends React.Component {
             },
           }}
         />
+        {!!id && <Comment /> }
+        {!!id && <CommentList />}
       </>
     );
   }

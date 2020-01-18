@@ -7,6 +7,7 @@ import {
   SwipeAction,
   Modal,
   PullToRefresh,
+  SearchBar,
 } from 'antd-mobile';
 import { Affix, Button, Icon } from 'antd';
 import router from 'umi/router';
@@ -27,6 +28,7 @@ class Home extends React.Component {
     this.state = {
       docked: false,
       disabled: false,
+      search: false,
       content: [],
       down: true,
       height: document.documentElement.clientHeight,
@@ -64,7 +66,7 @@ class Home extends React.Component {
   };
 
   handleSearch = content => {
-    console.log('search');
+    this.setState({search: !this.state.search})
   };
 
   handleAlert = id => {
@@ -147,11 +149,15 @@ class Home extends React.Component {
           icon={<Icon type={this.state.docked ? 'left' : 'right'} />}
           onLeftClick={this.handleLeftClick}
           rightContent={
-            <Icon
-              type="search"
-              style={{ marginRight: 16 }}
-              onClick={this.handleSearch}
-            />
+            this.state.search ? (
+              <SearchBar placeholder="search" onCancel={()=>this.setState({search: !this.state.search})} style={{width: 200}} />
+            ) : (
+              <Icon
+                type="search"
+                style={{ marginRight: 16 }}
+                onClick={this.handleSearch}
+              />
+            )
           }
         >
           {window.location.pathname.replace('/', '')}
