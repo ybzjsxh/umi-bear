@@ -61,12 +61,6 @@ class Article extends React.Component {
     }
   }
 
-  // componentDidUpdate() {
-  //   this.setState((prevProps, preState) => ({
-
-  //   }))
-  // }
-
   handleLeftClick = () => {
     // console.log('goBack');
     return this.props.history.goBack();
@@ -152,6 +146,8 @@ class Article extends React.Component {
     return (
       <>
         <NavBar
+          className={styles.navbar}
+          mode="dark"
           icon={<Icon type="left" />}
           onLeftClick={this.handleLeftClick}
           rightContent={
@@ -177,11 +173,12 @@ class Article extends React.Component {
           </div>
         )}
         <SimpleMDE
+          className={styles.markdown}
           onChange={this.handleChange}
           value={content}
           options={{
             autofocus: true,
-            spellChecker: false,
+            spellChecker: true,
             insertTexts: {
               horizontalRule: ['', '\n\n-----\n\n'],
               image: ['![](http://', ')'],
@@ -225,8 +222,8 @@ class Article extends React.Component {
             },
           }}
         />
-        {!!id && <Comment /> }
-        {!!id && <CommentList />}
+        {!!id && <Comment {...this.props} /> }
+        {!!id && <CommentList  {...this.props} />}
       </>
     );
   }

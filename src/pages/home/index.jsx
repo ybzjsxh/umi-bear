@@ -122,20 +122,20 @@ class Home extends React.Component {
         {[0, 1, 2, 3, 4].map((i, index) => {
           if (index === 0) {
             return (
-              <List.Item
+              <Item
                 key={index}
                 thumb=""
                 multipleLine
                 style={{ background: '#fff' }}
               >
                 Category
-              </List.Item>
+              </Item>
             );
           }
           return (
-            <List.Item key={index} thumb="" arrow="horizontal">
+            <Item key={index} thumb="" arrow="horizontal">
               Category{index}
-            </List.Item>
+            </Item>
           );
         })}
       </List>

@@ -12,6 +12,8 @@ const port = process.env.PORT || 3001;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '10mb' }));
 
+app.disable('x-powered-by');
+
 router.get('/getArticleList', async (req, res) => {
   let result = await controller.getAll();
   res.json({
@@ -28,6 +30,7 @@ router.get('/getArticleDetail', async (req, res) => {
     data: {
       title: result.title,
       detail: result.desc,
+      comments: result.comments,
     },
   });
 });
@@ -70,11 +73,19 @@ router.delete('/delArticle', async (req, res) => {
   }
 });
 
+router.post('/addComment', async (req, res) => {
+  let result = await controller.addComment(req.body);
+  res.json({
+    code: 0,
+    success: true,
+  });
+});
+
 app.use('/api', router);
 
 app.use('*', (req, res) => {
-  res.redirect('/')
-})
+  res.redirect('/');
+});
 
 app.listen(port, () => {
   net.info(`后台服务启动成功：http://127.0.0.1:${port}`);

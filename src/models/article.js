@@ -4,6 +4,7 @@ import {
   addArticle,
   delArticle,
   updateArticle,
+  addComment,
 } from '@/services/api';
 
 export default {
@@ -18,7 +19,6 @@ export default {
       comments: [],
       create_time: '',
       desc: '',
-      id: 16,
       img_url: '',
       keyword: [],
       like_users: [],
@@ -80,6 +80,15 @@ export default {
       }
       !!resolve && resolve(response);
     },
+
+    *addComment({ payload }, { call, put }) {
+      const { resolve, params } = payload;
+      const response = yield call(addComment, params);
+      if (response.code === 0) {
+        yield call({ type: 'getArticleDetail', payload: params });
+      }
+      !!resolve && resolve(response);
+    },
   },
 
   reducers: {
@@ -103,5 +112,12 @@ export default {
         articleDetail: payload,
       };
     },
+
+    // saveComment(state, { payload }) {
+    //   return {
+    //     ...state,
+    //     comments: payload,
+    //   };
+    // },
   },
 };

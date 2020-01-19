@@ -1,6 +1,9 @@
 export default {
-  namespace: 'comment',
-  state: {},
+  namespace: 'comments',
+  state: {
+    observers: [],
+    commentList: []
+  },
   effects: {},
   reducers: {}
 }

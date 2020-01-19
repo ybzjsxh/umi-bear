@@ -17,3 +17,6 @@ dist
 .umi
 .umi-production
 logs
+
+# vscode
+.vscode

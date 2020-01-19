@@ -29,3 +29,10 @@ export async function delArticle(params) {
     data: params,
   });
 }
+
+export async function addComment(params) {
+  return request('/api/addComment', {
+    method: 'POST',
+    data: params,
+  });
+}
