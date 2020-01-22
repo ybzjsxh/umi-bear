@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState /* useEffect */ } from 'react';
 import { Button, TextareaItem, Toast } from 'antd-mobile';
 
 import styles from './comment.less';
