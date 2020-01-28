@@ -50,7 +50,6 @@ export default {
     *getArticleDetail({ payload }, { call, put }) {
       const { resolve, params } = payload;
       const response = yield call(getArticleDetail, params);
-      !!resolve && resolve(response);
       // console.log('response :', response)
       if (response.code === 0) {
         yield put({
@@ -58,6 +57,7 @@ export default {
           payload: response.data,
         });
       }
+      !!resolve && resolve(response);
     },
 
     *addArticle({ payload }, { call, put }) {
@@ -85,7 +85,11 @@ export default {
       const { resolve, params } = payload;
       const response = yield call(addComment, params);
       if (response.code === 0) {
-        yield call({ type: 'getArticleDetail', payload: params });
+        // yield call(getArticleDetail, params);
+        yield put({
+          type: 'getArticleDetail',
+          payload: { resolve, params: { id: params.id } },
+        });
       }
       !!resolve && resolve(response);
     },

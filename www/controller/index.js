@@ -20,7 +20,7 @@ const findArticle = async _id => {
       err.error(error);
     } else {
       net.info(`查找article ${doc.title}`);
-      return doc
+      return doc;
     }
   });
   return result;
@@ -77,9 +77,7 @@ const delArticle = async _id => {
 const addComment = async ({ id, content }) => {
   let c = await findArticle(id);
   let new_comments = c.comments;
-  console.log(id, content, c);
   new_comments.push({ content, commentTime: dayjs().format() });
-  console.log(new_comments);
   let result = await Article.updateOne(
     { _id: id },
     {
