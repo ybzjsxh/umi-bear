@@ -7,7 +7,7 @@ import hljs from 'highlight.js';
 import { connect } from 'dva';
 
 import 'easymde/dist/easymde.min.css';
-import Comment from './components/comment'
+import Comment from './components/comment';
 import CommentList from './components/commentList';
 import styles from './article.less';
 
@@ -153,7 +153,11 @@ class Article extends React.Component {
           rightContent={
             <Button
               size="small"
-              style={{ background: 'rgba(0,180,0,.7)', color: '#fff' }}
+              style={{
+                background: 'rgba(0,180,0,.7)',
+                color: '#fff',
+                marginRight: 15,
+              }}
               onClick={this.handleSave}
             >
               <PICon
@@ -222,8 +226,8 @@ class Article extends React.Component {
             },
           }}
         />
-        {!!id && <Comment {...this.props} /> }
-        {!!id && <CommentList  {...this.props} />}
+        {!!id && <Comment {...this.props} />}
+        {!!id && <CommentList {...this.props} />}
       </>
     );
   }

@@ -1,4 +1,4 @@
-import 'antd-mobile/dist/antd-mobile.less';
+import "./index.less";
 
 import Redirect from 'umi/redirect'
 

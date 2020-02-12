@@ -27,10 +27,11 @@ class Home extends React.Component {
     super(props);
     this.state = {
       docked: false,
-      disabled: false,
       search: false,
-      content: [],
+      articleList: [],
       down: true,
+      filterText: '',
+      focused: false,
       height: document.documentElement.clientHeight,
     };
   }
@@ -52,7 +53,7 @@ class Home extends React.Component {
         Toast.hide();
         this.setState({
           loading: false,
-          content: res.data.list,
+          articleList: res.data.list,
         });
         // localStorage.setItem('content', JSON.stringify(res.data.list));
       } else {
@@ -61,12 +62,26 @@ class Home extends React.Component {
     });
   }
 
-  handleLeftClick = d => {
-    this.setState({ docked: !this.state.docked });
+  handleStateChange = state => {
+    state === 'docked'
+      ? this.setState({ docked: !this.state.docked })
+      : this.setState({ search: !this.state.search });
   };
 
-  handleSearch = content => {
-    this.setState({search: !this.state.search})
+  handleFilter = content => {
+    let new_list = this.props.article.articleList.filter(
+      i => i.title === content,
+    );
+    if (!!new_list && new_list.length !== 0) {
+      this.setState({ articleList: new_list, filterText: content });
+    }
+  };
+
+  handleSearchCancel = () => {
+    this.setState(prevState => ({ filterText: '', search: !prevState.search }));
+    if (!!this.state.filterText) {
+      this.componentDidMount();
+    }
   };
 
   handleAlert = id => {
@@ -116,7 +131,7 @@ class Home extends React.Component {
   };
 
   render() {
-    const { article } = this.props;
+    const { articleList, search, docked, down, height, focused } = this.state;
     const sidebar = (
       <List>
         {[0, 1, 2, 3, 4].map((i, index) => {
@@ -128,13 +143,13 @@ class Home extends React.Component {
                 multipleLine
                 style={{ background: '#fff' }}
               >
-                Category
+                笔记本
               </Item>
             );
           }
           return (
             <Item key={index} thumb="" arrow="horizontal">
-              Category{index}
+              笔记本{index}
             </Item>
           );
         })}
@@ -146,16 +161,24 @@ class Home extends React.Component {
           id="my-navbar"
           className={styles['my-navbar']}
           mode="dark"
-          icon={<Icon type={this.state.docked ? 'left' : 'right'} />}
-          onLeftClick={this.handleLeftClick}
+          icon={<Icon type={docked ? 'left' : 'right'} />}
+          onLeftClick={() => this.handleStateChange('docked')}
           rightContent={
-            this.state.search ? (
-              <SearchBar placeholder="search" onCancel={()=>this.setState({search: !this.state.search})} style={{width: 200}} />
+            search ? (
+              <SearchBar
+                placeholder="搜索标题"
+                onCancel={() => this.handleSearchCancel()}
+                onChange={e => this.handleFilter(e)}
+                onClear={() => this.componentDidMount()}
+                onFocus={() => this.setState({ focused: true })}
+                onBlur={() => this.setState({ focused: false })}
+                style={{ width: 200 }}
+              />
             ) : (
               <Icon
                 type="search"
                 style={{ marginRight: 16 }}
-                onClick={this.handleSearch}
+                onClick={() => this.handleStateChange('search')}
               />
             )
           }
@@ -167,22 +190,28 @@ class Home extends React.Component {
           style={{
             minHeight: document.documentElement.clientHeight,
           }}
-          contentStyle={{ color: '#A6A6A6', textAlign: 'center' }}
+          contentStyle={{
+            color: '#A6A6A6',
+            textAlign: 'center',
+            opacity: focused ? 0.3 : 1,
+            transition:
+              'opacity 0.3s ease-out, left 0.3s ease-out, right 0.3s ease-out',
+          }} // left right为了兼容侧边栏的渐变
           sidebarStyle={{ border: '1px solid #ddd', marginTop: 45 }}
           sidebar={sidebar}
-          docked={this.state.docked}
+          docked={docked}
           onOpenChange={this.handleLeftClick}
         >
           <PullToRefresh
             damping={60}
             ref={el => (this.ptr = el)}
             style={{
-              height: this.state.height,
+              height: height,
               overflow: 'auto',
               marginTop: 45,
             }}
-            indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
-            refreshing={this.state.refreshing}
+            indicator={down ? {} : { deactivate: '上拉可以刷新' }}
+            refreshing={this.props.loading}
             onRefresh={this.handleRefresh}
           >
             <List
@@ -194,31 +223,32 @@ class Home extends React.Component {
                 tip: '正在加载数据...',
               }}
             >
-              {article.articleList.map((i, index) => (
-                <SwipeAction
-                  autoClose
-                  right={[
-                    {
-                      text: '删除',
-                      onPress: () => this.handleAlert(i._id),
-                      style: { backgroundColor: '#F4333C', color: 'white' },
-                    },
-                  ]}
-                  key={i._id}
-                  onOpen={() => console.log('global open')}
-                  onClose={() => console.log('global close')}
-                >
-                  <Item
+              {articleList &&
+                articleList.map((i, index) => (
+                  <SwipeAction
+                    autoClose
+                    right={[
+                      {
+                        text: '删除',
+                        onPress: () => this.handleAlert(i._id),
+                        style: { backgroundColor: '#F4333C', color: 'white' },
+                      },
+                    ]}
                     key={i._id}
-                    arrow="horizontal"
-                    onClick={() => router.push(`/article?id=${i._id}`)}
-                    style={{ height: 80 }}
-                    extra={`${dayjs(i.create_time).format('YY.M.DD HH:mm')}`}
+                    onOpen={() => console.log('global open')}
+                    onClose={() => console.log('global close')}
                   >
-                    {i.title}
-                  </Item>
-                </SwipeAction>
-              ))}
+                    <Item
+                      key={i._id}
+                      arrow="horizontal"
+                      onClick={() => router.push(`/article?id=${i._id}`)}
+                      style={{ height: 80 }}
+                      extra={`${dayjs(i.create_time).format('YY.M.DD HH:mm')}`}
+                    >
+                      {i.title}
+                    </Item>
+                  </SwipeAction>
+                ))}
             </List>
           </PullToRefresh>
         </Drawer>
