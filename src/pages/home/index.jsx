@@ -29,7 +29,6 @@ class Home extends React.Component {
       docked: false,
       search: false,
       articleList: [],
-      down: true,
       filterText: '',
       focused: false,
       height: document.documentElement.clientHeight,
@@ -131,7 +130,7 @@ class Home extends React.Component {
   };
 
   render() {
-    const { articleList, search, docked, down, height, focused } = this.state;
+    const { articleList, search, docked, height, focused } = this.state;
     const sidebar = (
       <List>
         {[0, 1, 2, 3, 4].map((i, index) => {
@@ -206,11 +205,11 @@ class Home extends React.Component {
             damping={60}
             ref={el => (this.ptr = el)}
             style={{
-              height: height,
+              height,
               overflow: 'auto',
               marginTop: 45,
             }}
-            indicator={down ? {} : { deactivate: '上拉可以刷新' }}
+            indicator={{ deactivate: '上拉可以刷新' }}
             refreshing={this.props.loading}
             onRefresh={this.handleRefresh}
           >
