@@ -1,40 +1,28 @@
 // ref: https://umijs.org/config/
 export default {
-  treeShaking: true,
   hash: true,
-  // history: 'hash',
+  antd: {
+    dark: true,
+    compact: true,
+  },
+  mfsu: {},
+  dva: {},
+  dynamicImport: {},
+  title: 'umi-bear',
   // routes: [
   //   {
   //     path: '/',
-  //     component: '../layouts/index',
+  //     component: '@/layouts/index',
   //     routes: [
-  //       { path: '/', component: '../pages/home/index' }
-  //     ]
-  //   }
-  // ],
-  plugins: [
-    // ref: https://umijs.org/plugin/umi-plugin-react.html
-    [
-      'umi-plugin-react',
-      {
-        antd: true,
-        dva: true,
-        dynamicImport: { webpackChunkName: true },
-        title: 'umi-bear',
-        dll: false,
+  //       { path: '/home', component: 'home' },
+  //       { path: '/article', component: 'article' }
 
-        routes: {
-          exclude: [
-            /models\//,
-            /services\//,
-            /model\.(t|j)sx?$/,
-            /service\.(t|j)sx?$/,
-            /components\//,
-          ],
-        },
-      },
-    ],
-  ],
+  //     ]
+  //   },
+  // ],
+  devServer: {
+    port: 3000,
+  },
   proxy: {
     '/api': {
       target: 'http://localhost:3001',

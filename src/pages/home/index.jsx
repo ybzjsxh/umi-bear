@@ -9,8 +9,15 @@ import {
   PullToRefresh,
   SearchBar,
 } from 'antd-mobile';
-import { Affix, Button, Icon } from 'antd';
-import router from 'umi/router';
+import { Affix, Button } from 'antd';
+import {
+  LeftOutlined,
+  RightOutlined,
+  SearchOutlined,
+  LoadingOutlined,
+  FileAddOutlined,
+} from '@ant-design/icons';
+import { history } from 'umi';
 import dayjs from 'dayjs';
 
 import styles from './index.less';
@@ -39,14 +46,14 @@ class Home extends React.Component {
     Toast.loading('加载中', 0, null, true);
     const { dispatch } = this.props;
 
-    new Promise(resolve => {
+    new Promise((resolve) => {
       dispatch({
         type: 'article/queryArticle',
         payload: {
           resolve,
         },
       });
-    }).then(res => {
+    }).then((res) => {
       // console.log('res :', res);
       if (res.code === 0) {
         Toast.hide();
@@ -61,15 +68,15 @@ class Home extends React.Component {
     });
   }
 
-  handleStateChange = state => {
+  handleStateChange = (state) => {
     state === 'docked'
       ? this.setState({ docked: !this.state.docked })
       : this.setState({ search: !this.state.search });
   };
 
-  handleFilter = content => {
+  handleFilter = (content) => {
     let new_list = this.props.article.articleList.filter(
-      i => i.title === content,
+      (i) => i.title === content,
     );
     if (!!new_list && new_list.length !== 0) {
       this.setState({ articleList: new_list, filterText: content });
@@ -77,13 +84,16 @@ class Home extends React.Component {
   };
 
   handleSearchCancel = () => {
-    this.setState(prevState => ({ filterText: '', search: !prevState.search }));
+    this.setState((prevState) => ({
+      filterText: '',
+      search: !prevState.search,
+    }));
     if (!!this.state.filterText) {
       this.componentDidMount();
     }
   };
 
-  handleAlert = id => {
+  handleAlert = (id) => {
     const alert = Modal.alert;
     alert('删除', '确定吗?', [
       { text: '取消', onPress: () => console.log('cancel') },
@@ -91,10 +101,10 @@ class Home extends React.Component {
     ]);
   };
 
-  handleDelete = id => {
+  handleDelete = (id) => {
     Toast.loading('删除中', 0, null, true);
     const { dispatch } = this.props;
-    new Promise(resolve => {
+    new Promise((resolve) => {
       dispatch({
         type: 'article/delArticle',
         payload: {
@@ -102,7 +112,7 @@ class Home extends React.Component {
           params: { id },
         },
       });
-    }).then(res => {
+    }).then((res) => {
       if (res.code === 0) {
         Toast.hide();
       } else {
@@ -113,12 +123,12 @@ class Home extends React.Component {
 
   handleRefresh = () => {
     const { dispatch } = this.props;
-    new Promise(resolve => {
+    new Promise((resolve) => {
       dispatch({
         type: 'article/queryArticle',
         payload: { resolve },
       });
-    }).then(res => {
+    }).then((res) => {
       if (res.code === 0) {
         console.log('refreshed');
       }
@@ -126,7 +136,7 @@ class Home extends React.Component {
   };
 
   handleAdd = () => {
-    router.push(`/article?id=`);
+    history.push(`/article?id=`);
   };
 
   render() {
@@ -160,22 +170,21 @@ class Home extends React.Component {
           id="my-navbar"
           className={styles['my-navbar']}
           mode="dark"
-          icon={<Icon type={docked ? 'left' : 'right'} />}
+          icon={docked ? <LeftOutlined /> : <RightOutlined />}
           onLeftClick={() => this.handleStateChange('docked')}
           rightContent={
             search ? (
               <SearchBar
                 placeholder="搜索标题"
                 onCancel={() => this.handleSearchCancel()}
-                onChange={e => this.handleFilter(e)}
+                onChange={(e) => this.handleFilter(e)}
                 onClear={() => this.componentDidMount()}
                 onFocus={() => this.setState({ focused: true })}
                 onBlur={() => this.setState({ focused: false })}
                 style={{ width: 200 }}
               />
             ) : (
-              <Icon
-                type="search"
+              <SearchOutlined
                 style={{ marginRight: 16 }}
                 onClick={() => this.handleStateChange('search')}
               />
@@ -203,7 +212,7 @@ class Home extends React.Component {
         >
           <PullToRefresh
             damping={60}
-            ref={el => (this.ptr = el)}
+            ref={(el) => (this.ptr = el)}
             style={{
               height,
               overflow: 'auto',
@@ -217,7 +226,7 @@ class Home extends React.Component {
               className={styles['my-list']}
               loading={{
                 spinning: this.props.loading,
-                indicator: <Icon type="loading" />,
+                indicator: <LoadingOutlined />,
                 size: 'large',
                 tip: '正在加载数据...',
               }}
@@ -240,7 +249,7 @@ class Home extends React.Component {
                     <Item
                       key={i._id}
                       arrow="horizontal"
-                      onClick={() => router.push(`/article?id=${i._id}`)}
+                      onClick={() => history.push(`/article?id=${i._id}`)}
                       style={{ height: 80 }}
                       extra={`${dayjs(i.create_time).format('YY.M.DD HH:mm')}`}
                     >
@@ -258,7 +267,7 @@ class Home extends React.Component {
             shape="circle"
             onClick={this.handleAdd}
           >
-            <Icon type="file-add" />
+            <FileAddOutlined />
           </Button>
         </Affix>
       </>

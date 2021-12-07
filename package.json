@@ -10,37 +10,32 @@
     "ui": "umi ui"
   },
   "dependencies": {
-    "antd": "^3.19.5",
-    "antd-mobile": "^2.3.1",
-    "cross-env": "^6.0.3",
+    "@ant-design/icons": "^4.7.0",
     "dayjs": "^1.8.19",
-    "dva": "^2.6.0-beta.6",
-    "highlight.js": "^9.16.2",
-    "marked": "^0.7.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-simplemde-editor": "^4.1.0",
-    "umi-request": "^1.2.11"
+    "easymde": "^2.15.0",
+    "highlight.js": "~10.x",
+    "marked": "^3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-simplemde-editor": "^5.0.2",
+    "umi": "^3.5.20"
   },
   "devDependencies": {
-    "babel-eslint": "^9.0.0",
-    "eslint": "^5.4.0",
-    "eslint-config-umi": "^1.4.0",
-    "eslint-plugin-flowtype": "^2.50.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.11.1",
-    "husky": "^0.14.3",
-    "lint-staged": "^7.2.2",
-    "mockjs": "^1.1.0",
-    "react-test-renderer": "^16.7.0",
-    "umi": "^2.7.7",
-    "umi-plugin-react": "^1.8.4"
+    "@umijs/preset-react": "^1",
+    "@umijs/test": "^3.5.20",
+    "prettier": "^2.2.0",
+    "yorkie": "^2.0.0",
+    "cross-env": "^7.0.3",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.1.2",
+    "mockjs": "^1.1.0"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,jsx}": [
-      "eslint --fix",
-      "git add"
+    "*.{js,jsx,less,md,json}": [
+      "prettier --write"
     ]
   },
   "engines": {

@@ -1,9 +1,7 @@
-import "./index.less";
+import './index.less';
 
-import Redirect from 'umi/redirect'
+import { Redirect } from 'umi';
 
-export default function() {
-  return (
-    <Redirect to='/home' />
-  );
+export default function () {
+  return <Redirect to="/home" />;
 }

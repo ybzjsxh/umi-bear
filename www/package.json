@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
-    "chalk": "^3.0.0",
+    "chalk-cli": "^5.0.0",
     "dayjs": "^1.8.19",
     "express": "^4.17.1",
     "log4js": "^6.1.0",

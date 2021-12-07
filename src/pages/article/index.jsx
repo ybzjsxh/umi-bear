@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon as PICon } from 'antd';
+import { LeftOutlined, LoadingOutlined, SaveOutlined } from '@ant-design/icons';
 import { NavBar, Icon, Toast, Button } from 'antd-mobile';
 import marked from 'marked';
 import SimpleMDE from 'react-simplemde-editor';
@@ -33,13 +33,13 @@ class Article extends React.Component {
     console.log(`id: ${id || '没有'}`);
     if (!!id) {
       this.setState({ id });
-      new Promise(resolve => {
+      new Promise((resolve) => {
         dispatch({
           type: 'article/getArticleDetail',
           payload: { resolve, params: { id } },
         });
       })
-        .then(res => {
+        .then((res) => {
           Toast.hide();
           // console.log('reeeee', res);
           if (res.code === 0) {
@@ -51,11 +51,11 @@ class Article extends React.Component {
           }
           hljs.initHighlightingOnLoad();
         })
-        .catch(err => {
+        .catch((err) => {
           this.setState({ loading: false });
           // console.log(err);
         });
-      document.querySelector('.preview').click();
+      // document.querySelector('.preview').click();
     } else {
       Toast.hide();
     }
@@ -73,7 +73,7 @@ class Article extends React.Component {
     const { id } = location.query;
     const { title, content } = this.state;
     if (!!id) {
-      new Promise(resolve => {
+      new Promise((resolve) => {
         dispatch({
           type: 'article/updateArticle',
           payload: {
@@ -85,7 +85,7 @@ class Article extends React.Component {
             },
           },
         });
-      }).then(res => {
+      }).then((res) => {
         // console.log('res :', res);
         if (res.code === 0) {
           this.setState({
@@ -100,7 +100,7 @@ class Article extends React.Component {
       });
     } else {
       if (!!title && !!content) {
-        new Promise(resolve => {
+        new Promise((resolve) => {
           dispatch({
             type: 'article/addArticle',
             payload: {
@@ -111,7 +111,7 @@ class Article extends React.Component {
               },
             },
           });
-        }).then(res => {
+        }).then((res) => {
           // console.log(res);
           if (res.code === 0) {
             this.setState({
@@ -132,11 +132,11 @@ class Article extends React.Component {
     }
   };
 
-  handleChange = value => {
+  handleChange = (value) => {
     this.setState({ content: value });
   };
 
-  handleTitleChange = e => {
+  handleTitleChange = (e) => {
     this.setState({ title: e.target.value });
   };
 
@@ -148,7 +148,7 @@ class Article extends React.Component {
         <NavBar
           className={styles.navbar}
           mode="dark"
-          icon={<Icon type="left" />}
+          icon={<LeftOutlined />}
           onLeftClick={this.handleLeftClick}
           rightContent={
             <Button
@@ -160,10 +160,11 @@ class Article extends React.Component {
               }}
               onClick={this.handleSave}
             >
-              <PICon
-                type={this.state.loading ? 'loading' : 'save'}
-                style={{ marginRight: 16 }}
-              />
+              {this.state.loading ? (
+                <LoadingOutlined style={{ marginRight: 16 }} />
+              ) : (
+                <SaveOutlined style={{ marginRight: 16 }} />
+              )}
               保存
             </Button>
           }
@@ -211,7 +212,7 @@ class Article extends React.Component {
             ],
             toolbarTips: true,
             renderingConfig: { codeSyntaxHighlighting: true },
-            previewRender: plainText => {
+            previewRender: (plainText) => {
               return marked(plainText, {
                 renderer: new marked.Renderer(),
                 gfm: true,
@@ -221,7 +222,7 @@ class Article extends React.Component {
                 breaks: true,
                 smartLists: true,
                 smartypants: true,
-                highlight: code => hljs.highlightAuto(code).value,
+                highlight: (code) => hljs.highlightAuto(code).value,
               });
             },
           }}
